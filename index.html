@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phú Quý - Mỹ An</title>
+    <link rel="icon" type="image/x-icon" href="assets/heart.webp" />
+
+    <meta property="og:title" content="Phú Quý ❤️ Mỹ An - Wedding Invitation" />
+    <meta
+      property="og:description"
+      content="Trân trọng mời bạn đến dự lễ thành hôn của chúng tôi vào ngày 01/11/2025 tại Dolphin Palace, Bắc Ninh"
+    />
+    <meta
+      property="og:image"
+      content="https://firebasestorage.googleapis.com/v0/b/beckem-love-2001.appspot.com/o/ACN03107.jpg?alt=media&token=3eb7d4c2-d623-4c2f-bcb3-7fb154a16348"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Phú Quý ❤️ Mỹ An - Wedding Invitation"
+    />
+    <meta
+      name="twitter:description"
+      content="Trân trọng mời bạn đến dự lễ thành hôn của chúng tôi vào ngày 01/11/2025 tại Dolphin Palace, Bắc Ninh"
+    />
+    <meta
+      name="twitter:image"
+      content="https://firebasestorage.googleapis.com/v0/b/beckem-love-2001.appspot.com/o/ACN03107.jpg?alt=media&token=3eb7d4c2-d623-4c2f-bcb3-7fb154a16348"
+    />
+
+    <meta
+      name="description"
+      content="Trân trọng mời bạn đến dự lễ thành hôn của Phú Quý và Mỹ An vào ngày 01/11/2025 tại Dolphin Palace, Bắc Ninh"
+    />
+    <meta
+      name="keywords"
+      content="wedding, invitation, Phú Quý, Mỹ An, cưới, Bắc Ninh, Dolphin Palace"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/photoswipe@5/dist/photoswipe.css"
+    />
+
+    <link rel="stylesheet" href="style-build.css" />
+    <!-- Preload critical envelope images -->
+    <link rel="preload" as="image" href="assets/envelope-head.webp" />
+    <link rel="preload" as="image" href="assets/envelope-body.webp" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  </head>
+  <body>
+    <!-- Background music -->
+    <audio id="backgroundMusic" loop>
+      <source src="assets/i-do.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="loading-screen">
+      <div class="evelope-container">
+        <div class="envelopeWrapper" onClick="openLetter()">
+          <div class="envelope">
+            <div class="envelopImg">
+              <img src="assets/envelope-head.webp" alt="" />
+            </div>
+
+            <div class="letter">
+              <div class="text">
+                <p>Phú Quý ❤️ Mỹ An</p>
+                <img src="assets/ACN02733.webp" alt="" />
+              </div>
+            </div>
+
+            <div class="envelopBodyImg">
+              <img
+                class="shadow_left shadow_letter"
+                src="assets/shadow-left.webp"
+                alt=""
+              />
+              <img src="assets/envelope-body.webp" alt="" />
+              <img
+                class="shadow_right shadow_letter"
+                src="assets/shadow-right.webp"
+                alt=""
+              />
+            </div>
+          </div>
+          <div class="signIcon">
+            <div class="signIconRotate">
+              <svg
+                class="signIconRotate_bgLogo"
+                width="800px"
+                height="800px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <path
+                  fill="#ffffff"
+                  d="M12 2c0 0-3 0-4 3-1-3-4-3-4-3-2.2 0-4 1.8-4 4 0 4.1 8 9 8 9s8-5 8-9c0-2.2-1.8-4-4-4z"
+                ></path>
+              </svg>
+
+              <svg
+                class="signIconRotate_Logo bounce"
+                width="800px"
+                height="800px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <path
+                  fill="#923840"
+                  d="M12 2c0 0-3 0-4 3-1-3-4-3-4-3-2.2 0-4 1.8-4 4 0 4.1 8 9 8 9s8-5 8-9c0-2.2-1.8-4-4-4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hearts close">
+      <div class="heart a1">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a2">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a3">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a4">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a5">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a6">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a7">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+      <div class="heart a8">
+        <img src="assets/heart.webp" alt="heart" />
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div id="canvas-container"></div>
+
+      <div class="ui-overlay">
+        <div class="action-buttons">
+          <button
+            id="music-btn"
+            class="action-btn"
+            aria-label="Bật/tắt nhạc nền"
+          >
+            <svg
+              id="music-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+          </button>
+          <button id="qrButton" class="action-btn" aria-label="Mở mã QR">
+            <svg
+              width="800px"
+              height="800px"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              data-name="Layer 1"
+              fill="currentColor"
+            >
+              <path
+                d="M8,21H4a1,1,0,0,1-1-1V16a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H8a1,1,0,0,0,0-2Zm14-6a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H16a1,1,0,0,0,0,2h4a3,3,0,0,0,3-3V16A1,1,0,0,0,22,15ZM20,1H16a1,1,0,0,0,0,2h4a1,1,0,0,1,1,1V8a1,1,0,0,0,2,0V4A3,3,0,0,0,20,1ZM2,9A1,1,0,0,0,3,8V4A1,1,0,0,1,4,3H8A1,1,0,0,0,8,1H4A3,3,0,0,0,1,4V8A1,1,0,0,0,2,9Zm8-4H6A1,1,0,0,0,5,6v4a1,1,0,0,0,1,1h4a1,1,0,0,0,1-1V6A1,1,0,0,0,10,5ZM9,9H7V7H9Zm5,2h4a1,1,0,0,0,1-1V6a1,1,0,0,0-1-1H14a1,1,0,0,0-1,1v4A1,1,0,0,0,14,11Zm1-4h2V9H15Zm-5,6H6a1,1,0,0,0-1,1v4a1,1,0,0,0,1,1h4a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,17H7V15H9Zm5-1a1,1,0,0,0,1-1,1,1,0,0,0,0-2H14a1,1,0,0,0-1,1v1A1,1,0,0,0,14,16Zm4-3a1,1,0,0,0-1,1v3a1,1,0,0,0,0,2h1a1,1,0,0,0,1-1V14A1,1,0,0,0,18,13Zm-4,4a1,1,0,1,0,1,1A1,1,0,0,0,14,17Z"
+              />
+            </svg>
+          </button>
+          <button id="mapButton" class="action-btn" aria-label="Mở bản đồ">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </button>
+
+          <button id="open-gallery-btn" class="action-btn">
+            <svg
+              version="1.1"
+              id="Capa_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 391.377 391.377"
+              style="enable-background: new 0 0 391.377 391.377"
+              xml:space="preserve"
+            >
+              <g fill="currentColor">
+                <path
+                  d="M387.456,91.78c-3.739-6.178-9.648-10.526-16.638-12.245L162.499,28.298c-2.106-0.519-4.27-0.781-6.433-0.781
+             c-12.471,0-23.259,8.45-26.235,20.551l-6.271,25.498L19.405,106.616c-13.918,4.416-22.089,18.982-18.602,33.163l50.1,203.696
+             c1.733,7.046,6.122,12.958,12.358,16.647c4.182,2.474,8.837,3.737,13.564,3.737c2.324,0,4.667-0.306,6.977-0.923l160.436-42.907
+             l63.58,15.638c2.106,0.519,4.271,0.781,6.435,0.781c12.471,0,23.259-8.451,26.233-20.55l50.102-203.698
+             C392.307,105.211,391.195,97.959,387.456,91.78z M79.246,333.102L30.421,134.595l84.742-26.89L79.732,251.763
+             c-1.721,6.99-0.608,14.243,3.131,20.422c3.738,6.178,9.646,10.527,16.639,12.247l84.249,20.721L79.246,333.102z M335.706,209.731
+             l-28.492-43.88c-3.492-5.379-9.295-8.59-15.523-8.59c-4.229,0-8.271,1.438-11.69,4.157l-60.656,48.255
+             c-1.82,1.449-4.045,2.215-6.434,2.215c-3.137,0-6.058-1.336-8.014-3.663l-22.981-27.35c-4.406-5.242-11.464-8.372-18.879-8.372
+             c-3.661,0-7.207,0.803-10.254,2.32l-26.477,13.193l31.942-129.871L360.74,107.95L335.706,209.731z"
+                />
+                <path
+                  d="M207.988,145.842c2.114,0.52,4.282,0.783,6.442,0.783c12.406,0,23.143-8.423,26.109-20.483
+             c3.542-14.405-5.295-29.008-19.7-32.552c-2.114-0.52-4.282-0.783-6.442-0.783c-12.406,0-23.143,8.423-26.109,20.483
+             C184.746,127.695,193.583,142.298,207.988,145.842z"
+                />
+              </g>
+            </svg>
+          </button>
+
+          <button id="rsvp-btn" class="action-btn" aria-label="Mở form RSVP">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
+              <path d="M13 8H7" />
+              <path d="M17 12H7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Gallery Modal -->
+      <div class="modal-backdrop" id="galleryModalBackdrop">
+        <div class="modal-content gallery-modal">
+          <button class="modal-close" id="galleryModalClose">&times;</button>
+          <div class="gallery-modal-body">
+            <h2>Thư viện ảnh</h2>
+            <div class="gallery-grid" id="my-gallery">
+              <a
+                href="assets/ACN02169.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02169.webp"
+                    alt="Wedding Photo 1"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN02498.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02498.webp"
+                    alt="Wedding Photo 2"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN02768.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02768.webp"
+                    alt="Wedding Photo 3"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN02846.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02846.webp"
+                    alt="Wedding Photo 4"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN02932.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02932.webp"
+                    alt="Wedding Photo 5"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03074.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03074.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03107.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03107.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03149.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03149.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03216.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03216.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03264.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03264.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02140.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02140.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02429.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02429.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02470.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02470.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02535.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02535.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02587.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02587.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02599.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02599.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02618.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02618.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02683.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02683.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02790.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02790.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02906.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02906.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02946.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02946.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN02976.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN02976.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03014.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03014.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03098.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03098.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03118.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03118.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03129.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03129.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03197.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03197.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03220.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03220.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+
+              <a
+                href="assets/ACN03232.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03232.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+              <a
+                href="assets/ACN03323.webp"
+                data-pswp-width="1536"
+                data-pswp-height="2304"
+                target="_blank"
+              >
+                <div class="gallery-item">
+                  <img
+                    src="assets/ACN03323.webp"
+                    alt="Wedding Photo 6"
+                    loading="lazy"
+                  />
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal-content">
+          <button class="modal-close" id="modalClose">&times;</button>
+
+          <div id="qrModalContent" class="modal-body">
+            <h2>Mừng cưới</h2>
+            <div class="qr-container">
+              <div>
+                <p>Nhà trai (Phú Quý)</p>
+                <img
+                  src="assets/qr-quy.png"
+                  alt="QR Code Nhà trai"
+                  loading="lazy"
+                />
+              </div>
+              <div>
+                <p>Nhà gái (Mỹ An)</p>
+                <img
+                  src="assets/qr-an.png"
+                  alt="QR Code Nhà gái"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div id="mapModalContent" class="modal-body">
+            <h2>Địa điểm tổ chức</h2>
+            <img src="assets/dolphin.jpeg" />
+            <p><strong>Tư gia nhà gái</strong></p>
+            <p>Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình</p>
+            <a
+              href="https://maps.app.goo.gl/ZPhPwHmDqgLMD1X57"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Xem trên Google Maps</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- RSVP Modal -->
+      <div class="modal-backdrop" id="rsvpModalBackdrop">
+        <div class="modal-content rsvp-modal">
+          <button class="modal-close" id="rsvpModalClose">&times;</button>
+          <div class="rsvp-modal-body">
+            <h2>Mời bạn đến dự đám cưới của chúng tôi</h2>
+            <form id="rsvpForm">
+              <div class="form-group">
+                <label for="guestName">Tên của bạn là gì?</label>
+                <input
+                  type="text"
+                  id="guestName"
+                  name="guestName"
+                  required
+                  placeholder="Nhập tên của bạn"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Bạn sẽ tham gia chứ?</label>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value="yes"
+                      required
+                    />
+                    <span class="radio-custom"></span>
+                    Tất nhiên rồi
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="attendance" value="no" required />
+                    <span class="radio-custom"></span>
+                    Rất tiếc, mình không thể đến
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="wishes">Lời chúc</label>
+                <textarea
+                  id="wishes"
+                  name="wishes"
+                  placeholder="Gửi lời chúc đến cặp đôi..."
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <button type="submit" class="submit-btn">Gửi</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="particles" aria-hidden="true">
+        <div class="particle">
+          <img src="assets/leaf1.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf2.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf3.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf4.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf1.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf2.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf3.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf4.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf1.png" alt="" />
+        </div>
+        <div class="particle">
+          <img src="assets/leaf4.png" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <script src="app-build.js"></script>
+
+    <script type="module">
+      import PhotoSwipeLightbox from "https://unpkg.com/photoswipe@5/dist/photoswipe-lightbox.esm.js";
+
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: "#my-gallery",
+        children: "a",
+        pswpModule: () =>
+          import("https://unpkg.com/photoswipe@5/dist/photoswipe.esm.js"),
+      });
+
+      lightbox.init();
+
+      // Make lightbox globally accessible
+      window.lightbox = lightbox;
+    </script>
+  </body>
+</html>

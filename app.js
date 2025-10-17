@@ -425,7 +425,7 @@ function createLetterTexture(side) {
     ctx.lineTo(canvas.width - 70, 370);
     ctx.stroke();
 
-    ctx.font = "bold 15px MightyWings";
+    ctx.font = "bold 16px MightyWings";
 
     ctx.fillText(
       "Đến dự buổi tiệc chung vui cùng gia đình chúng tôi tại",
@@ -434,19 +434,16 @@ function createLetterTexture(side) {
     );
 
     ctx.fillStyle = textColor;
-    ctx.font = "bold 17px MightyWings";
-    ctx.fillText("SẢNH TẦNG 1", canvas.width / 2, 510);
-
-    ctx.font = "bold 15px MightyWings";
+    ctx.font = "bold 16px MightyWings";
 
     ctx.fillText(
-      "119A Âu Cơ, phường Kinh Bắc, tỉnh Bắc Ninh",
+      "Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình",
       canvas.width / 2,
       535
     );
 
     ctx.font = "bold 18px MightyWings";
-    ctx.fillText("VÀO LÚC 9 GIỜ 00 - NGÀY 31.10.2025", canvas.width / 2, 570);
+    ctx.fillText("VÀO LÚC 17 GIỜ 30 - NGÀY 31.10.2025", canvas.width / 2, 570);
 
     ctx.font = "bold 15px MightyWings";
     ctx.fillText("Tức ngày 11 tháng 09 năm Ất Tỵ", canvas.width / 2, 590);
@@ -459,8 +456,8 @@ function createLetterTexture(side) {
     );
 
     ctx.font = "bold 15px MightyWings";
-    ctx.fillText("Đón khách 9:00", canvas.width / 2 - 100, 720);
-    ctx.fillText("Khai tiệc 9:00", canvas.width / 2 + 100, 720);
+    ctx.fillText("Đón khách 17:30", canvas.width / 2 - 100, 720);
+    ctx.fillText("Khai tiệc 17:30", canvas.width / 2 + 100, 720);
   }
 
   return canvas;
@@ -565,8 +562,8 @@ function addBackVenue3D() {
 
   const material = new THREE.MeshPhongMaterial({ color: themeColor });
   const mesh = new THREE.Mesh(geometry, material);
-  // Back canvas coords: x = center 256, y ≈ 480
-  mesh.position.set(toWorldX(256), toWorldY(450), z);
+  // Back canvas coords: x = center 256, y ≈ 460
+  mesh.position.set(toWorldX(256), toWorldY(460), z);
   mesh.rotation.y = Math.PI; // face back side
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -795,7 +792,7 @@ function onWindowResize() {
   if (Math.abs(targetZoom - newBaseZoom) > 1) {
     targetZoom = newBaseZoom;
   }
-  
+
   // Update envelope image based on new screen size
   updateEnvelopeImage();
 }
@@ -1050,12 +1047,12 @@ musicBtn.addEventListener("click", toggleMusic);
 
 // Function to update envelope image based on screen size
 function updateEnvelopeImage() {
-  const envelopeImage = document.querySelector('.letter .text img');
+  const envelopeImage = document.querySelector(".letter .text img");
   if (envelopeImage) {
     if (isMobileDevice()) {
-      envelopeImage.src = 'assets/ACN03107.webp';
+      envelopeImage.src = "assets/ACN03107.webp";
     } else {
-      envelopeImage.src = 'assets/ACN02733.webp';
+      envelopeImage.src = "assets/ACN02733.webp";
     }
   }
 }
@@ -1063,7 +1060,7 @@ function updateEnvelopeImage() {
 function openLetter() {
   // Update envelope image based on screen size
   updateEnvelopeImage();
-  
+
   // Start background music
   if (backgroundMusic) {
     backgroundMusic.volume = 0.5; // Set volume to 50%

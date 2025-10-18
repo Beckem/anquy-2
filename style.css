@@ -27,6 +27,7 @@ body {
   height: 100vh;
   overflow: hidden;
   overscroll-behavior: none; /* Prevent scroll chaining */
+  cursor: url('assets/cursor.png'), auto;
   /* Performance optimizations */
   will-change: auto;
   transform: translateZ(0); /* Force hardware acceleration */
@@ -57,15 +58,15 @@ body {
   width: 100vw;
   height: 100vh;
   z-index: 1;
-  cursor: grab;
+  cursor: url('assets/cursor.png'), auto;
   /* Performance optimizations */
   will-change: transform;
   transform: translateZ(0); /* Force hardware acceleration */
 }
 
-#canvas-container:active {
-  cursor: grabbing;
-}
+/* #canvas-container:active {
+  cursor: url('assets/heart.webp') 16 16, auto;
+} */
 
 .ui-overlay {
   position: fixed;
@@ -95,7 +96,7 @@ body {
   background-color: white;
   color: #b33939;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -194,7 +195,7 @@ body {
   color: #aaa;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   line-height: 1;
   /* Accessibility */
   outline: none;
@@ -300,7 +301,7 @@ body {
 
 .gallery-item {
   position: relative;
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -430,7 +431,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   font-weight: normal;
   color: #333;
 }
@@ -473,7 +474,7 @@ body {
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: bold;
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   transition: background-color 0.3s ease;
   margin-top: 10px;
   font-family: inherit;
@@ -662,7 +663,7 @@ body {
   height: 50px;
   z-index: 4;
   transform: translate(-50%, 0%);
-  cursor: pointer;
+  cursor: url('assets/cursor.png'), auto;
   bottom: 150px;
 }
 
@@ -1087,7 +1088,7 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  cursor: default;
+  cursor: url('assets/cursor.png'), auto;
   -webkit-animation-name: particles-fall, particles-shake;
   -webkit-animation-duration: 10s, 3s;
   -webkit-animation-timing-function: linear, ease-in-out;

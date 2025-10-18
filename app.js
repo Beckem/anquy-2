@@ -1,6 +1,6 @@
 // Three.js variables
-let scene, camera, renderer, controls;
-let letterGroup, frontPage, backPage;
+let scene, camera, renderer;
+let letterGroup, frontPage;
 let autoRotate = false;
 let mouseX = 0,
   mouseY = 0;
@@ -28,8 +28,9 @@ let lastTouchCenter = { x: 0, y: 0 };
 const themeColor = "#923840";
 const textColor = "#111111";
 
-// Cache for THREE font parsed from MightyWings typeface JSON
+// Cache for THREE fonts parsed from typeface JSON files
 let mightyThreeFont = null;
+let bohemeThreeFont = null;
 
 function init() {
   // Scene setup
@@ -110,102 +111,743 @@ function setupLighting() {
 }
 
 function createTexturesWithImages(letterGeometry) {
-  // Create back texture first (no images)
-  const backCanvas = createLetterTexture("back");
-  const backTexture = new THREE.CanvasTexture(backCanvas);
+  const letterWidth = 4;
+  const letterHeight = 6;
+  const letterDepth = 0.05;
 
-  const frontCanvas = createLetterTexture("front");
-  const frontTexture = new THREE.CanvasTexture(frontCanvas);
-
-  const flower = new Image();
-  flower.src = "assets/hoa1.png";
-  flower.onload = function () {
-    const ctx = frontCanvas.getContext("2d");
-
-    const flowerWidth = 160;
-    const flowerHeight = 160;
-    const x = frontCanvas.width / 2;
-    const y = 490;
-
-    ctx.save();
-
-    ctx.translate(x, y);
-
-    ctx.rotate((300 * Math.PI) / 180);
-
-    ctx.drawImage(
-      flower,
-      -flowerWidth / 2,
-      -flowerHeight / 2,
-      flowerWidth,
-      flowerHeight
-    );
-
-    ctx.restore();
-
-    frontTexture.needsUpdate = true;
-  };
-
-  const qaImage = new Image();
-  qaImage.src = "assets/QA.png";
-  qaImage.onload = function () {
-    const ctx = backCanvas.getContext("2d");
-
-    const qaWidth = 140;
-    const qaHeight = 140;
-    const x = backCanvas.width / 2;
-    const y = -10;
-
-    ctx.drawImage(qaImage, x - qaWidth / 2, y, qaWidth, qaHeight);
-
-    backTexture.needsUpdate = true;
-  };
-
-  const itemWidth = 55;
-  const itemHeight = 55;
-  const itemY = 640;
-  // Draw 3 item images at y=500
-  const item1Image = new Image();
-  item1Image.src = "assets/item1.png";
-  item1Image.onload = function () {
-    const ctx = backCanvas.getContext("2d");
-    const x1 = backCanvas.width / 2 - 100; // Left position
-
-    ctx.drawImage(item1Image, x1 - itemWidth / 2, itemY, itemWidth, itemHeight);
-    backTexture.needsUpdate = true;
-  };
-
-  const item3Image = new Image();
-  item3Image.src = "assets/item3.png";
-  item3Image.onload = function () {
-    const ctx = backCanvas.getContext("2d");
-    const x3 = backCanvas.width / 2 + 100; // Right position
-
-    ctx.drawImage(item3Image, x3 - itemWidth / 2, itemY, itemWidth, itemHeight);
-    backTexture.needsUpdate = true;
-  };
-
-  // Materials for different faces
-  const materials = [
-    new THREE.MeshLambertMaterial({ color: 0xf8f9fa }), // right
-    new THREE.MeshLambertMaterial({ color: 0xf8f9fa }), // left
-    new THREE.MeshLambertMaterial({ color: 0xf8f9fa }), // top
-    new THREE.MeshLambertMaterial({ color: 0xf8f9fa }), // bottom
-    new THREE.MeshLambertMaterial({ map: frontTexture }), // front
-    new THREE.MeshLambertMaterial({ map: backTexture }), // back
-  ];
-
-  // Create front page
-  frontPage = new THREE.Mesh(letterGeometry, materials);
+  // Create the main letter body with solid color (no textures)
+  const bodyMaterial = new THREE.MeshLambertMaterial({ color: themeColor });
+  frontPage = new THREE.Mesh(letterGeometry, bodyMaterial);
   frontPage.castShadow = true;
   frontPage.receiveShadow = true;
-
   letterGroup.add(frontPage);
 
-  // Add 3D names as TextGeometry meshes on the front face
-  addNames3D();
-  // Add 3D venue text on the back face
-  addBackVenue3D();
+  // Create rounded white background planes that match the ExtrudeGeometry shape
+  const roundedPlaneGeometry = createRoundedPlaneGeometry(
+    letterWidth - 0.08,
+    letterHeight - 0.08,
+    0.3
+  );
+  const whiteMaterial = new THREE.MeshLambertMaterial({ color: "#ffffff" });
+
+  // Front white background plane
+  const frontBackground = new THREE.Mesh(roundedPlaneGeometry, whiteMaterial);
+  frontBackground.position.z = letterDepth / 2 + 0.005; // Slightly in front of main body
+  frontBackground.castShadow = false;
+  frontBackground.receiveShadow = true;
+  letterGroup.add(frontBackground);
+
+  // Back white background plane
+  const backBackground = new THREE.Mesh(roundedPlaneGeometry, whiteMaterial);
+  backBackground.position.z = -letterDepth / 2 - 0.005; // Slightly behind main body
+  backBackground.rotation.y = Math.PI; // Flip to face the back
+  backBackground.castShadow = false;
+  backBackground.receiveShadow = true;
+  letterGroup.add(backBackground);
+
+  // Add shadow-receiving planes slightly behind the white backgrounds for better shadow visibility
+  const shadowMaterial = new THREE.MeshLambertMaterial({
+    color: "#f8f8f8",
+    transparent: true,
+    opacity: 0.3,
+  });
+
+  // Front shadow plane
+  const frontShadowPlane = new THREE.Mesh(roundedPlaneGeometry, shadowMaterial);
+  frontShadowPlane.position.z = letterDepth / 2 + 0.002; // Between main body and white background
+  frontShadowPlane.castShadow = false;
+  frontShadowPlane.receiveShadow = true;
+  letterGroup.add(frontShadowPlane);
+
+  // Back shadow plane
+  const backShadowPlane = new THREE.Mesh(roundedPlaneGeometry, shadowMaterial);
+  backShadowPlane.position.z = -letterDepth / 2 - 0.002; // Between main body and white background
+  backShadowPlane.rotation.y = Math.PI; // Flip to face the back
+  backShadowPlane.castShadow = false;
+  backShadowPlane.receiveShadow = true;
+  letterGroup.add(backShadowPlane);
+
+  // Add all 3D text and images
+  addAll3DContent();
+}
+
+// Function to add all 3D content (text and images)
+function addAll3DContent() {
+  if (!letterGroup) return;
+
+  const letterWidth = 4;
+  const letterHeight = 6;
+  const letterDepth = 0.05;
+
+  const toWorldY = (canvasY) => (0.5 - canvasY / 768) * letterHeight;
+  const toWorldX = (canvasX) => (canvasX / 512 - 0.5) * letterWidth;
+
+  const frontZ = letterDepth / 2 + 0.01; // On top of white background
+  const backZ = -letterDepth / 2 - 0.01; // On top of white background
+
+  const createTextMesh = (text, size, canvasX, canvasY, z, rotationY = 0) => {
+    const geometry = new THREE.TextGeometry(text, {
+      font: mightyThreeFont,
+      size: size,
+      height: 0.02,
+      curveSegments: 8,
+      bevelEnabled: true,
+      bevelThickness: 0.005,
+      bevelSize: 0.002,
+      bevelSegments: 2,
+    });
+    geometry.computeBoundingBox();
+    geometry.center();
+
+    const material = new THREE.MeshPhongMaterial({
+      color: textColor,
+      shininess: 30,
+      specular: 0x222222,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(toWorldX(canvasX), toWorldY(canvasY), z);
+    mesh.rotation.y = rotationY;
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    return mesh;
+  };
+
+  const createBohemeTextMesh = (
+    text,
+    size,
+    canvasX,
+    canvasY,
+    z,
+    rotationY = 0
+  ) => {
+    const geometry = new THREE.TextGeometry(text, {
+      font: bohemeThreeFont,
+      size: size,
+      height: 0.03,
+      curveSegments: 8,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.004,
+      bevelSegments: 2,
+    });
+    geometry.computeBoundingBox();
+    geometry.center();
+
+    const material = new THREE.MeshPhongMaterial({
+      color: themeColor,
+      shininess: 30,
+      specular: 0x222222,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(toWorldX(canvasX), toWorldY(canvasY), z);
+    mesh.rotation.y = rotationY;
+    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    return mesh;
+  };
+
+  const createImageMesh = (
+    imageSrc,
+    width,
+    height,
+    canvasX,
+    canvasY,
+    z,
+    rotationY = 0
+  ) => {
+    const texture = new THREE.TextureLoader().load(imageSrc);
+    const geometry = new THREE.PlaneGeometry(width / 100, height / 100);
+    const material = new THREE.MeshLambertMaterial({
+      map: texture,
+      transparent: true,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(toWorldX(canvasX), toWorldY(canvasY), z);
+    mesh.rotation.y = rotationY;
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    return mesh;
+  };
+
+  const createHeartMesh = (canvasX, canvasY, z) => {
+    // Create heart shape using THREE.Shape
+    const heartShape = new THREE.Shape();
+
+    // Heart shape path - using proven heart shape code
+    const x = 0,
+      y = 0;
+    const scale = 0.002; // Scale down the heart to fit under calendar
+
+    heartShape
+      .moveTo(x + 25 * scale, y + 25 * scale)
+      .bezierCurveTo(x + 25 * scale, y + 25 * scale, x + 20 * scale, y, x, y)
+      .bezierCurveTo(
+        x - 30 * scale,
+        y,
+        x - 30 * scale,
+        y + 35 * scale,
+        x - 30 * scale,
+        y + 35 * scale
+      )
+      .bezierCurveTo(
+        x - 30 * scale,
+        y + 55 * scale,
+        x - 10 * scale,
+        y + 77 * scale,
+        x + 25 * scale,
+        y + 95 * scale
+      )
+      .bezierCurveTo(
+        x + 60 * scale,
+        y + 77 * scale,
+        x + 80 * scale,
+        y + 55 * scale,
+        x + 80 * scale,
+        y + 35 * scale
+      )
+      .bezierCurveTo(
+        x + 80 * scale,
+        y + 35 * scale,
+        x + 80 * scale,
+        y,
+        x + 50 * scale,
+        y
+      )
+      .bezierCurveTo(
+        x + 35 * scale,
+        y,
+        x + 25 * scale,
+        y + 25 * scale,
+        x + 25 * scale,
+        y + 25 * scale
+      );
+
+    // Create extrude settings for the heart
+    const extrudeSettings = {
+      depth: 0.03, // Small depth for the heart
+      bevelEnabled: true,
+      bevelThickness: 0.005,
+      bevelSize: 0.005,
+      bevelOffset: 0,
+      bevelSegments: 3,
+    };
+
+    const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+    const material = new THREE.MeshLambertMaterial({
+      color: themeColor,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(toWorldX(canvasX), toWorldY(canvasY), z);
+    mesh.rotation.z = Math.PI;
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    return mesh;
+  };
+
+  const placeAllContent = () => {
+    // Front face content
+    const smallTextSize = (11 / 768) * 6;
+    const mediumTextSize = (13 / 768) * 6;
+    const largeTextSize = (15 / 768) * 6;
+    const extraLargeTextSize = (50 / 768) * 6;
+
+    // Front - Left side (Nhà gái)
+    letterGroup.add(createTextMesh("NHÀ GÁI", mediumTextSize, 130, 60, frontZ));
+    letterGroup.add(
+      createTextMesh("ÔNG NGUYỄN TRỌNG BẰNG", smallTextSize, 130, 90, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh("BÀ NGUYỄN THỊ HOA", smallTextSize, 130, 120, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh("HIỂN KHÁNH, NINH BÌNH", smallTextSize, 130, 150, frontZ)
+    );
+
+    // Front - Right side (Nhà trai)
+    letterGroup.add(
+      createTextMesh("NHÀ TRAI", mediumTextSize, 382, 60, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh("ÔNG HÀ VĂN LONG", smallTextSize, 382, 90, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh("BÀ DƯƠNG THỊ KHÁNH", smallTextSize, 382, 120, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh("KINH BẮC, BẮC NINH", smallTextSize, 382, 150, frontZ)
+    );
+
+    // Front - Center content
+    // Add 3D line divider above center content
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-1.5, toWorldY(180), frontZ),
+      new THREE.Vector3(1.5, toWorldY(180), frontZ),
+    ]);
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: textColor,
+      linewidth: 2,
+    });
+    const dividerLine = new THREE.Line(lineGeometry, lineMaterial);
+    letterGroup.add(dividerLine);
+
+    letterGroup.add(
+      createTextMesh("TRÂN TRỌNG BÁO TIN", mediumTextSize, 256, 215, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh(
+        "LỄ THÀNH HÔN CỦA CON CHÚNG TÔI",
+        mediumTextSize,
+        256,
+        245,
+        frontZ
+      )
+    );
+    letterGroup.add(
+      createBohemeTextMesh("and", extraLargeTextSize, 256, 350, frontZ)
+    );
+
+    // Front - Names (already handled by addNames3D)
+    addNames3D();
+
+    // Front - Bottom content
+    letterGroup.add(
+      createTextMesh(
+        "HÔN LỄ ĐƯỢC CỬ HÀNH TẠI TƯ GIA",
+        largeTextSize,
+        256,
+        570,
+        frontZ
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình",
+        mediumTextSize,
+        256,
+        600,
+        frontZ
+      )
+    );
+    letterGroup.add(
+      createTextMesh("VÀO LÚC 6:00 - THỨ BẢY", largeTextSize, 256, 635, frontZ)
+    );
+    letterGroup.add(
+      createTextMesh(
+        "NGÀY 01 THÁNG 11 NĂM 2025",
+        largeTextSize,
+        256,
+        665,
+        frontZ
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "Tức ngày 12 tháng 09 năm Ất Tỵ",
+        mediumTextSize,
+        256,
+        695,
+        frontZ
+      )
+    );
+
+    // Front - Flower image
+    const flowerMesh = createImageMesh(
+      "assets/hoa1.webp",
+      150,
+      150,
+      256,
+      490,
+      frontZ
+    );
+    flowerMesh.rotation.z = Math.PI / 3; // 60 degrees rotation
+    flowerMesh.material.opacity = 0.7; // Set opacity to 0.7
+    flowerMesh.material.transparent = true; // Enable transparency
+    letterGroup.add(flowerMesh);
+
+    // White text on themed box
+    const createWhiteTextMesh = (
+      text,
+      size,
+      canvasX,
+      canvasY,
+      z,
+      rotationY = 0
+    ) => {
+      const geometry = new THREE.TextGeometry(text, {
+        font: mightyThreeFont,
+        size: size,
+        height: 0.02,
+        curveSegments: 8,
+        bevelEnabled: true,
+        bevelThickness: 0.005,
+        bevelSize: 0.002,
+        bevelSegments: 2,
+      });
+      geometry.computeBoundingBox();
+      geometry.center();
+
+      const material = new THREE.MeshPhongMaterial({
+        color: "#ffffff",
+        shininess: 30,
+        specular: 0x222222,
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(toWorldX(canvasX), toWorldY(canvasY), z);
+      mesh.rotation.y = rotationY;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
+      return mesh;
+    };
+
+    letterGroup.add(
+      createTextMesh(
+        "THÁNG 11 - NĂM 2025",
+        mediumTextSize,
+        256,
+        105,
+        backZ,
+        Math.PI
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "TRÂN TRỌNG KÍNH MỜI",
+        mediumTextSize,
+        256,
+        330,
+        backZ,
+        Math.PI
+      )
+    );
+    const backLineGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-1.5, toWorldY(355), backZ),
+      new THREE.Vector3(1.5, toWorldY(355), backZ),
+    ]);
+    const backLineMaterial = new THREE.LineBasicMaterial({
+      color: textColor,
+      linewidth: 2,
+    });
+    const backDividerLine = new THREE.Line(backLineGeometry, backLineMaterial);
+    letterGroup.add(backDividerLine);
+    letterGroup.add(
+      createTextMesh(
+        "Đến dự buổi tiệc chung vui cùng gia đình chúng tôi tại",
+        smallTextSize,
+        256,
+        380,
+        backZ,
+        Math.PI
+      )
+    );
+
+    letterGroup.add(
+      createTextMesh(
+        "Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình",
+        smallTextSize,
+        256,
+        505,
+        backZ,
+        Math.PI
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "VÀO LÚC 17 GIỜ 30 - NGÀY 30.10.2025",
+        mediumTextSize,
+        256,
+        540,
+        backZ,
+        Math.PI
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "Tức ngày 11 tháng 09 năm Ất Tỵ",
+        smallTextSize,
+        256,
+        570,
+        backZ,
+        Math.PI
+      )
+    );
+    letterGroup.add(
+      createTextMesh(
+        "Trân trọng cảm ơn sự hiện diện của Quý Khách!",
+        smallTextSize,
+        256,
+        610,
+        backZ,
+        Math.PI
+      )
+    );
+    letterGroup.add(
+      createTextMesh("Đón khách 17:30", smallTextSize, 356, 715, backZ, Math.PI)
+    );
+
+    letterGroup.add(
+      createTextMesh("Khai tiệc 17:30", smallTextSize, 156, 715, backZ, Math.PI)
+    );
+
+    // Back face content
+
+    // Back - Header date with themed box background (positioned under calendar days)
+    const headerBoxGeometry = new THREE.BoxGeometry(3.2, 0.27, 0.01);
+    const headerBoxMaterial = new THREE.MeshLambertMaterial({
+      color: themeColor,
+    });
+    const headerBox = new THREE.Mesh(headerBoxGeometry, headerBoxMaterial);
+    headerBox.position.set(0, toWorldY(150), backZ + 0.005); // Positioned under the calendar days
+    headerBox.rotation.y = Math.PI;
+    letterGroup.add(headerBox);
+
+    // Back - Calendar days (positioned above the box, right to left for back side)
+    const days = ["CN", "T.7", "T.6", "T.5", "T.4", "T.3", "T.2"];
+    const textSpacing = (512 - 140) / 7;
+    days.forEach((day, index) => {
+      const textX = 70 + (index + 0.5) * textSpacing;
+      letterGroup.add(
+        createWhiteTextMesh(
+          day,
+          mediumTextSize,
+          textX,
+          150,
+          backZ - 0.01,
+          Math.PI
+        )
+      );
+    });
+
+    // Back - Calendar numbers (right to left order for back side)
+    let number = 1;
+    const numberY = 180;
+    for (let row = 0; row < 5; row++) {
+      for (let col = 6; col >= 0; col--) {
+        // Reverse column order (right to left)
+        if (number <= 35) {
+          if (row === 0 && col > 1) continue; // Skip empty cells at start of first row
+          const numberX = 70 + (col + 0.5) * textSpacing;
+          const currentY = numberY + row * 28;
+
+          if (number === 1) {
+            // Special styling for number 1 - add heart shape here
+            letterGroup.add(
+              createWhiteTextMesh(
+                number.toString(),
+                smallTextSize,
+                numberX,
+                currentY,
+                backZ,
+                Math.PI
+              )
+            );
+            // Add heart shape under day 1 to make it special
+            letterGroup.add(
+              createHeartMesh(
+                numberX + 6,
+                currentY - 10,
+                backZ + 0.005,
+                Math.PI
+              )
+            );
+          } else {
+            letterGroup.add(
+              createTextMesh(
+                number.toString(),
+                smallTextSize,
+                numberX,
+                currentY,
+                backZ,
+                Math.PI
+              )
+            );
+          }
+          number++;
+        }
+      }
+    }
+
+    // Back - Images
+    letterGroup.add(
+      createImageMesh("assets/QA.png", 130, 130, 256, 45, backZ, Math.PI)
+    );
+    letterGroup.add(
+      createImageMesh("assets/item3.png", 45, 45, 156, 665, backZ, Math.PI)
+    );
+
+    letterGroup.add(
+      createImageMesh("assets/item1.png", 45, 45, 356, 665, backZ, Math.PI)
+    );
+
+    // Add back venue text
+    addBackVenue3D();
+  };
+
+  if (mightyThreeFont && bohemeThreeFont) {
+    placeAllContent();
+    return;
+  }
+
+  const loader = new THREE.FontLoader();
+  let fontsLoaded = 0;
+  const totalFonts = 2;
+
+  const checkAllFontsLoaded = () => {
+    fontsLoaded++;
+    if (fontsLoaded === totalFonts) {
+      placeAllContent();
+    }
+  };
+
+  // Load MightyWings font
+  loader.load(
+    "assets/MightyWings.json",
+    (font) => {
+      mightyThreeFont = font;
+      checkAllFontsLoaded();
+    },
+    undefined,
+    (err) => {
+      console.error("Failed to load MightyWings.json for 3D text:", err);
+      checkAllFontsLoaded();
+    }
+  );
+
+  // Load BohemeFloral font
+  loader.load(
+    "assets/BohemeFloral.json",
+    (font) => {
+      bohemeThreeFont = font;
+      checkAllFontsLoaded();
+    },
+    undefined,
+    (err) => {
+      console.error("Failed to load BohemeFloral.json for 3D text:", err);
+      checkAllFontsLoaded();
+    }
+  );
+}
+
+// Function to create rounded plane geometry
+function createRoundedPlaneGeometry(width, height, radius) {
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+
+  // Create rounded rectangle shape
+  const shape = new THREE.Shape();
+
+  // Start from bottom-left corner
+  shape.moveTo(-halfWidth + radius, -halfHeight);
+
+  // Bottom edge
+  shape.lineTo(halfWidth - radius, -halfHeight);
+
+  // Bottom-right corner
+  shape.quadraticCurveTo(
+    halfWidth,
+    -halfHeight,
+    halfWidth,
+    -halfHeight + radius
+  );
+
+  // Right edge
+  shape.lineTo(halfWidth, halfHeight - radius);
+
+  // Top-right corner
+  shape.quadraticCurveTo(halfWidth, halfHeight, halfWidth - radius, halfHeight);
+
+  // Top edge
+  shape.lineTo(-halfWidth + radius, halfHeight);
+
+  // Top-left corner
+  shape.quadraticCurveTo(
+    -halfWidth,
+    halfHeight,
+    -halfWidth,
+    halfHeight - radius
+  );
+
+  // Left edge
+  shape.lineTo(-halfWidth, -halfHeight + radius);
+
+  // Bottom-left corner
+  shape.quadraticCurveTo(
+    -halfWidth,
+    -halfHeight,
+    -halfWidth + radius,
+    -halfHeight
+  );
+
+  // Create plane geometry from shape
+  const geometry = new THREE.ShapeGeometry(shape);
+
+  return geometry;
+}
+
+// Function to create rounded rectangle geometry using ExtrudeGeometry
+function createRoundedBoxGeometry(width, height, depth, radius) {
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  const halfDepth = depth / 2;
+
+  // Create rounded rectangle shape
+  const shape = new THREE.Shape();
+
+  // Start from bottom-left corner
+  shape.moveTo(-halfWidth + radius, -halfHeight);
+
+  // Bottom edge
+  shape.lineTo(halfWidth - radius, -halfHeight);
+
+  // Bottom-right corner
+  shape.quadraticCurveTo(
+    halfWidth,
+    -halfHeight,
+    halfWidth,
+    -halfHeight + radius
+  );
+
+  // Right edge
+  shape.lineTo(halfWidth, halfHeight - radius);
+
+  // Top-right corner
+  shape.quadraticCurveTo(halfWidth, halfHeight, halfWidth - radius, halfHeight);
+
+  // Top edge
+  shape.lineTo(-halfWidth + radius, halfHeight);
+
+  // Top-left corner
+  shape.quadraticCurveTo(
+    -halfWidth,
+    halfHeight,
+    -halfWidth,
+    halfHeight - radius
+  );
+
+  // Left edge
+  shape.lineTo(-halfWidth, -halfHeight + radius);
+
+  // Bottom-left corner
+  shape.quadraticCurveTo(
+    -halfWidth,
+    -halfHeight,
+    -halfWidth + radius,
+    -halfHeight
+  );
+
+  // Extrude the shape
+  const extrudeSettings = {
+    depth: depth,
+    bevelEnabled: false,
+  };
+
+  const extrudeGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+  // Center the geometry
+  extrudeGeometry.translate(0, 0, -halfDepth);
+
+  return extrudeGeometry;
 }
 
 function createInvitationLetter() {
@@ -214,253 +856,19 @@ function createInvitationLetter() {
   const letterWidth = 4;
   const letterHeight = 6;
   const letterDepth = 0.05;
+  const cornerRadius = 0.3;
 
-  const letterGeometry = new THREE.BoxGeometry(
+  // Use ExtrudeGeometry for rounded corners
+  const letterGeometry = createRoundedBoxGeometry(
     letterWidth,
     letterHeight,
-    letterDepth
+    letterDepth,
+    cornerRadius
   );
 
   createTexturesWithImages(letterGeometry);
 
   scene.add(letterGroup);
-}
-
-function createLetterTexture(side) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 768;
-  const ctx = canvas.getContext("2d");
-
-  if (side === "front") {
-    // Front side - invitation content
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.textAlign = "center";
-    // Border
-    ctx.strokeStyle = themeColor;
-    ctx.lineWidth = 10;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 16px MightyWings";
-    ctx.fillText("NHÀ GÁI", 130, 60);
-    ctx.fillText("ÔNG NGUYỄN TRỌNG BẰNG", 130, 90);
-    ctx.fillText("BÀ NGUYỄN THỊ HOA", 130, 120);
-    ctx.fillText("HIỂN KHÁNH, NINH BÌNH", 130, 150);
-
-    ctx.fillText("NHÀ TRAI", canvas.width - 130, 60);
-    ctx.fillText("ÔNG HÀ VĂN LONG", canvas.width - 130, 90);
-    ctx.fillText("BÀ DƯƠNG THỊ KHÁNH", canvas.width - 130, 120);
-    ctx.fillText("KINH BẮC, BẮC NINH", canvas.width - 130, 150);
-
-    // Decorative line
-    ctx.strokeStyle = textColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(100, 175);
-    ctx.lineTo(canvas.width - 100, 175);
-    ctx.stroke();
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 17px MightyWings";
-    ctx.fillText("TRÂN TRỌNG BÁO TIN", canvas.width / 2, 215);
-    ctx.fillText("LỄ THÀNH HÔN CỦA CON CHÚNG TÔI", canvas.width / 2, 245);
-
-    ctx.fillStyle = themeColor;
-    ctx.font = "bold 50px BohemeFloral, serif";
-    ctx.fillText("and", canvas.width / 2, 370);
-    ctx.font = "bold 40px MightyWings";
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 17px MightyWings";
-    ctx.fillText("HÔN LỄ ĐƯỢC CỬ HÀNH TẠI TƯ GIA", canvas.width / 2, 570);
-    ctx.font = "bold 15px MightyWings";
-
-    ctx.fillText(
-      "Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình",
-      canvas.width / 2,
-      600
-    );
-
-    ctx.font = "bold 17px MightyWings";
-    ctx.fillText("VÀO LÚC 6:00 - THỨ BẢY", canvas.width / 2, 630);
-    ctx.fillText("NGÀY 01 THÁNG 11 NĂM 2025", canvas.width / 2, 660);
-
-    ctx.font = "bold 15px MightyWings";
-    ctx.fillText("Tức ngày 12 tháng 09 năm Ất Tỵ", canvas.width / 2, 690);
-  } else {
-    // Back side - decorative pattern
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.textAlign = "center";
-
-    // Border
-    ctx.strokeStyle = themeColor;
-    ctx.lineWidth = 10;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 16px MightyWings";
-    ctx.fillText("THÁNG 11 - NĂM 2025", canvas.width / 2, 125);
-
-    ctx.fillStyle = themeColor;
-    ctx.fillRect(70, 140, canvas.width - 70 * 2, 30);
-
-    const rectWidth = canvas.width - 70 * 2;
-    const textSpacing = rectWidth / 7;
-    const textY = 160;
-
-    ctx.fillStyle = "#ffffff"; // White color
-    ctx.font = "15px MightyWings";
-    ctx.textAlign = "center";
-
-    const days = ["T.2", "T.3", "T.4", "T.5", "T.6", "T.7", "CN"];
-    days.forEach((day, index) => {
-      const textX = 70 + (index + 0.5) * textSpacing;
-      ctx.fillText(day, textX, textY);
-    });
-
-    // Create grid of numbers from 1 to 35 below the days
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 15px MightyWings";
-    ctx.textAlign = "center";
-
-    let number = 1;
-    const numberY = textY + 30; // 10px gap below days
-
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 7; col++) {
-        if (number <= 35) {
-          if (row === 0 && col < 5) continue;
-
-          const numberX = 70 + (col + 0.5) * textSpacing;
-          const currentY = numberY + row * 28; // 20px spacing between rows
-
-          // Special styling for number 1
-          if (number === 1) {
-            // Draw heart background for number 1
-            ctx.fillStyle = themeColor;
-            ctx.beginPath();
-            const heartSize = 27;
-            const heartX = numberX + 5;
-            const heartY = currentY - 5;
-
-            const scale = heartSize / 95; // Scale factor to match heartSize
-            const scaleX = scale * 1.1; // 20% smaller in X direction
-            const x = heartX - heartSize / 2;
-            const y = heartY - heartSize / 2;
-
-            ctx.moveTo(x + 25 * scaleX, y + 25 * scale);
-            ctx.bezierCurveTo(
-              x + 25 * scaleX,
-              y + 25 * scale,
-              x + 20 * scaleX,
-              y,
-              x,
-              y
-            );
-            ctx.bezierCurveTo(
-              x - 30 * scaleX,
-              y,
-              x - 30 * scaleX,
-              y + 35 * scale,
-              x - 30 * scaleX,
-              y + 35 * scale
-            );
-            ctx.bezierCurveTo(
-              x - 30 * scaleX,
-              y + 55 * scale,
-              x - 10 * scaleX,
-              y + 77 * scale,
-              x + 25 * scaleX,
-              y + 95 * scale
-            );
-            ctx.bezierCurveTo(
-              x + 60 * scaleX,
-              y + 77 * scale,
-              x + 80 * scaleX,
-              y + 55 * scale,
-              x + 80 * scaleX,
-              y + 35 * scale
-            );
-            ctx.bezierCurveTo(
-              x + 80 * scaleX,
-              y + 35 * scale,
-              x + 80 * scaleX,
-              y,
-              x + 50 * scaleX,
-              y
-            );
-            ctx.bezierCurveTo(
-              x + 35 * scaleX,
-              y,
-              x + 25 * scaleX,
-              y + 25 * scale,
-              x + 25 * scaleX,
-              y + 25 * scale
-            );
-            ctx.fill();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(number.toString(), numberX, currentY);
-          } else {
-            ctx.fillStyle = textColor;
-            ctx.fillText(number.toString(), numberX, currentY);
-          }
-
-          number++;
-        }
-      }
-    }
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 17px MightyWings";
-    ctx.fillText("TRÂN TRỌNG KÍNH MỜI", canvas.width / 2, 345);
-
-    ctx.strokeStyle = textColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(70, 370);
-    ctx.lineTo(canvas.width - 70, 370);
-    ctx.stroke();
-
-    ctx.font = "bold 16px MightyWings";
-
-    ctx.fillText(
-      "Đến dự buổi tiệc chung vui cùng gia đình chúng tôi tại",
-      canvas.width / 2,
-      400
-    );
-
-    ctx.fillStyle = textColor;
-    ctx.font = "bold 16px MightyWings";
-
-    ctx.fillText(
-      "Xóm Nhì, xã Hiển Khánh, tỉnh Ninh Bình",
-      canvas.width / 2,
-      535
-    );
-
-    ctx.font = "bold 18px MightyWings";
-    ctx.fillText("VÀO LÚC 17 GIỜ 30 - NGÀY 31.10.2025", canvas.width / 2, 570);
-
-    ctx.font = "bold 15px MightyWings";
-    ctx.fillText("Tức ngày 11 tháng 09 năm Ất Tỵ", canvas.width / 2, 590);
-
-    ctx.font = "italic 15px MightyWings";
-    ctx.fillText(
-      "Trân trọng cảm ơn sự hiện diện của Quý Khách!",
-      canvas.width / 2,
-      620
-    );
-
-    ctx.font = "bold 15px MightyWings";
-    ctx.fillText("Đón khách 17:30", canvas.width / 2 - 100, 720);
-    ctx.fillText("Khai tiệc 17:30", canvas.width / 2 + 100, 720);
-  }
-
-  return canvas;
 }
 
 function addNames3D() {
@@ -562,8 +970,7 @@ function addBackVenue3D() {
 
   const material = new THREE.MeshPhongMaterial({ color: themeColor });
   const mesh = new THREE.Mesh(geometry, material);
-  // Back canvas coords: x = center 256, y ≈ 460
-  mesh.position.set(toWorldX(256), toWorldY(460), z);
+  mesh.position.set(toWorldX(256), toWorldY(440), z);
   mesh.rotation.y = Math.PI; // face back side
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -680,13 +1087,21 @@ function onTouchEnd(event) {
 }
 
 // Performance optimization: detect device capabilities and adjust settings
+let cachedPixelRatio = null;
+
 function getOptimalPixelRatio() {
+  // Return cached value if already calculated
+  if (cachedPixelRatio !== null) {
+    return cachedPixelRatio;
+  }
+
   const devicePixelRatio = window.devicePixelRatio;
   const isMobile = isMobileDevice();
 
   // For mobile devices, be more conservative with pixel ratio
   if (isMobile) {
-    return Math.min(devicePixelRatio, 1.2);
+    cachedPixelRatio = Math.min(devicePixelRatio, 1.2);
+    return cachedPixelRatio;
   }
 
   // For desktop, allow higher pixel ratio but cap it for performance
@@ -702,10 +1117,12 @@ function getOptimalPixelRatio() {
 
   // If basic canvas operations are slow, reduce pixel ratio
   if (endTime - startTime > 1) {
-    return Math.min(devicePixelRatio, 1.2);
+    cachedPixelRatio = Math.min(devicePixelRatio, 1.2);
+  } else {
+    cachedPixelRatio = Math.min(devicePixelRatio, 2);
   }
 
-  return Math.min(devicePixelRatio, 2);
+  return cachedPixelRatio;
 }
 
 function resizeRendererToDisplaySize(renderer) {
@@ -717,6 +1134,7 @@ function resizeRendererToDisplaySize(renderer) {
   const needResize = canvas.width !== width || canvas.height !== height;
 
   if (needResize) {
+    console.log("resize renderer to display size");
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
   }
@@ -725,13 +1143,6 @@ function resizeRendererToDisplaySize(renderer) {
 
 function animate() {
   requestAnimationFrame(animate);
-
-  // Only update camera if the canvas size actually changed
-  if (resizeRendererToDisplaySize(renderer)) {
-    const canvas = renderer.domElement;
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-  }
 
   if (letterGroup) {
     // Smooth rotation
@@ -783,31 +1194,26 @@ function setView(view) {
 }
 
 function onWindowResize() {
+  // Update camera aspect ratio
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+
+  // Update renderer size to match window dimensions
   renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // Handle renderer resize with pixel ratio optimization
+  resizeRendererToDisplaySize(renderer);
 
   // Update zoom values based on new screen size
   const newBaseZoom = isMobileDevice() ? 8 : 7;
   if (Math.abs(targetZoom - newBaseZoom) > 1) {
     targetZoom = newBaseZoom;
   }
-
-  // Update envelope image based on new screen size
-  updateEnvelopeImage();
 }
-
-const bohemeFont = new FontFace(
-  "BohemeFloral",
-  "url(assets/bohemefloral.woff)"
-);
 
 const mightyFont = new FontFace("MightyWings", "url(assets/MightyWings.otf)");
 
 Promise.all([
-  bohemeFont.load().then(function (font) {
-    document.fonts.add(font);
-  }),
   mightyFont.load().then(function (font) {
     document.fonts.add(font);
   }),
@@ -817,8 +1223,6 @@ Promise.all([
     animate();
     // Initialize RSVP button visibility
     updateRSVPButtonVisibility();
-    // Initialize envelope image based on screen size
-    updateEnvelopeImage();
   })
   .catch((error) => {
     console.log("Font loading failed:", error);
@@ -827,8 +1231,6 @@ Promise.all([
     animate();
     // Initialize RSVP button visibility
     updateRSVPButtonVisibility();
-    // Initialize envelope image based on screen size
-    updateEnvelopeImage();
   });
 
 const qrButton = document.getElementById("qrButton");
@@ -1045,25 +1447,13 @@ function updateMusicIcon(muted) {
 // Music button click event
 musicBtn.addEventListener("click", toggleMusic);
 
-// Function to update envelope image based on screen size
-function updateEnvelopeImage() {
-  const envelopeImage = document.querySelector(".letter .text img");
-  if (envelopeImage) {
-    if (isMobileDevice()) {
-      envelopeImage.src = "assets/ACN03107.webp";
-    } else {
-      envelopeImage.src = "assets/ACN02733.webp";
-    }
-  }
-}
+const openLetterBtn = document.getElementById("open-letter-btn");
+openLetterBtn.addEventListener("click", openLetter);
 
 function openLetter() {
-  // Update envelope image based on screen size
-  updateEnvelopeImage();
-
   // Start background music
   if (backgroundMusic) {
-    backgroundMusic.volume = 0.5; // Set volume to 50%
+    backgroundMusic.volume = 0.4; // Set volume to 50%
     backgroundMusic.loop = true; // Enable looping
     backgroundMusic.play().catch((error) => {
       console.log("Autoplay prevented:", error);

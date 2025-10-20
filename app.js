@@ -554,7 +554,7 @@ function addAll3DContent() {
     );
     letterGroup.add(
       createTextMesh(
-        "VÀO LÚC 17 GIỜ 30 - NGÀY 30.10.2025",
+        "VÀO LÚC 17 GIỜ 30 - NGÀY 31.10.2025",
         mediumTextSize,
         256,
         540,
